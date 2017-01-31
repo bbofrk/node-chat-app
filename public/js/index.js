@@ -6,10 +6,10 @@ socket.on('connect', function() {
 	// 	text: "Hey. This is Andrew"
 	// });
 
-	socket.emit('createMessage', {
-		from: "Andrew"
-		text: "Hey. This is Andrew"
-	});
+	// socket.emit('createMessage', {
+	// 	from: "Andrew"
+	// 	text: "Hey. This is Andrew"
+	// });
 });
 
 socket.on('disconnect', function() {

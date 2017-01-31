@@ -24,17 +24,22 @@ io.on('connection', (socket) => {
 	// 	console.log('createEmail', newEmail);
 	// });
 
-	socket.emit('newMessage', {
-		from: "Andrew",
-		text: "Can you meet at 6?",
-		createdAt: 123
-	});
+	// socket.emit('newMessage', {
+	// 	from: "Andrew",
+	// 	text: "Can you meet at 6?",
+	// 	createdAt: 123
+	// });
 
 	// socket.on('createEmail', (newEmail) => {
 	// 	console.log('createEmail', newEmail);
 	// });
 	socket.on('createMessage', (message) => {
 		console.log('create message', message);
+		io.emit('newMessage', {
+			from: message.from,
+			text: message.text,
+			createdAt: new Date().getTime()
+		});
 	});
 
 	socket.on('disconnect', () => {
