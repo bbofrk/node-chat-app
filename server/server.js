@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
 
 		socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
 
-		socket.broadcast.emit('newMessage', generateMessage('Admin', `${params.name} joined`)).to(params.room);
+		socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} joined`));
 		//io.emit (to everyone) -> io.to().emit
 		//socket.broadcast (to everyone except for self) -> socket.broadcast().to();
 		//socket.emit (targeted person) ->
@@ -61,8 +61,11 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('createMessage', (message, callback) => {
-		console.log('create message', message);
-		io.emit('newMessage', generateMessage(message.from, message.text));
+		// console.log('create message', message);
+		var user = users.getUser(socket.id);
+		if (user && isRealString(message.text)) {
+			io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+		}
 		callback();
 
 		// io.emit('newMessage', {
@@ -78,8 +81,12 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('createLocationMessage', (coords) => {
+		var user = users.getUser(socket.id);
+		if (user) {
+				io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+		}
 		// io.emit('newMessage', generateMessage('Admin', `${coords.latitude, coords.longitude}`));
-		io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+
 	});
 
 	socket.on('disconnect', () => {
