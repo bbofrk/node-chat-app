@@ -35,15 +35,22 @@ io.on('connection', (socket) => {
 	// });
 
 	// socket.emit from Admin text Welcome to the chat app
-	socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
-
-	socket.broadcast.emit('newMessage', generateMessage('Admin', 'new user joined'));
+	// socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+	//
+	// socket.broadcast.emit('newMessage', generateMessage('Admin', 'new user joined'));
 	// socket.broadcast.emit from admin text New user joined
 
 	socket.on('join', (params, callback) => {
 		if (!isRealString(params.name) || !isRealString(params.room)) {
 			callback('Name and room name are required');
 		}
+		socket.join(params.room);
+		socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+
+		socket.broadcast.emit('newMessage', generateMessage('Admin', `${params.name} joined`)).to(params.room);
+		//io.emit (to everyone) -> io.to().emit
+		//socket.broadcast (to everyone except for self) -> socket.broadcast().to();
+		//socket.emit (targeted person) ->
 		callback();
 	});
 
